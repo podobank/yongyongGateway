@@ -15,6 +15,7 @@ spring:
         - id: dotori-user-service
           uri: lb://dotori-user-service    # 인증 서버 URI
           predicates:                   # 요청 헤더나 Path 조건 비교
-            - Path=/dotori-user-service/**    # 요청 Path
+            - Path=/dotoriuser-service/**    # 요청 Path
           filters:
             - StripPrefix=1
+
