@@ -4,28 +4,36 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://j9d107.p.ssafy.io:8761/eureka
+      defaultZone: http://localhost:8761/eureka
 
 spring:
   application:
     name: apigateway-service
   cloud:
     gateway:
-      routes:
-        - id: dotori-user-service
-          uri: lb://dotori-user-service    # 인증 서버 URI
-          predicates:                   # 요청 헤더나 Path 조건 비교
-            - Path=/dotori-user-service/**    # 요청 Path
+      routes: # 사용자 인증과정             - StripPrefix=1
+        - id: dotori-auth-service
+          uri: lb://dotori-auth-service
+          predicates:
+            - Path=/dotori-auth-service/**
+            - Method=POST
           filters:
-            - StripPrefix=1
-    config:
-      name: dotori
-      profile: gateway
-  config:
-    import: "optional:configserver:http://j9d107.p.ssafy.io:9900/"
+            - RewritePath=/dotori-auth-service/(?<segment>.*), /$\{segment}
+        - id: dotori-user-service
+          uri: lb://dotori-user-service
+          predicates:
+            - Path=/dotori-user-service/**
+            - Method=POST
+          filters:
+            - RewritePath=/dotori-user-service/(?<segment>.*), /$\{segment}
+#    config:
+#      name: dotori
+#      profile: gateway
+#  config:
+#    import: "optional:configserver:http://j9d107.p.ssafy.io:9900/"
 
   main:
     allow-bean-definition-overriding: true
 
-encrypt:
-  key: ${ENCRYPT_KEY}
+#encrypt:
+#  key: ${ENCRYPT_KEY}
