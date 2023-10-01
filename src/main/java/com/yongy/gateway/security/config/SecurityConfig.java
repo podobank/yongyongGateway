@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .authorizeExchange()
                 .pathMatchers("/dotori-auth-service/**").permitAll()
-                .pathMatchers("/dotori-user-service/**").hasAnyRole(Role.ROLE_USER.name(), Role.ROLE_ADMIN.name())
+                .pathMatchers("/dotori-user-service/**").hasAnyRole("USER", "ADMIN")
                 .anyExchange().permitAll()
                 .and()
                 .addFilterAt(new AuthorizationHeaderFilter(jwtTokenProvider), SecurityWebFiltersOrder.AUTHENTICATION)

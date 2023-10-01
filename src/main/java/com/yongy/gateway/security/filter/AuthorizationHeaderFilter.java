@@ -35,17 +35,16 @@ public class AuthorizationHeaderFilter implements WebFilter {
         Authentication authentication = null;
         ServerWebExchange serverWebExchange = null;
         if(StringUtils.hasText(authToken)){ // 토큰이 있는 경우
-
             if(jwtTokenProvider.validateToken(authToken)){ // 토큰이 유효한 경우
                 authentication = jwtTokenProvider.getAuthentication(authToken);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 String id = authentication.getPrincipal().toString();
+                log.info(id);
                 serverWebExchange = exchange.mutate()
                         .request(builder -> builder.header("id", id))
                         .build();
-
             }
         }
 
