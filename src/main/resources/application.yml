@@ -11,21 +11,32 @@ spring:
     name: apigateway-service
   cloud:
     gateway:
-      routes: # 사용자 인증과정             - StripPrefix=1
+      routes: # 사용자 인증과정             - StripPrefix=1             - Method=POST
         - id: dotori-auth-service
           uri: lb://dotori-auth-service
           predicates:
-            - Path=/dotori-auth-service/**
-            - Method=POST
+            - Path=/api/v1/auth/**
           filters:
-            - RewritePath=/dotori-auth-service/(?<segment>.*), /$\{segment}
+            - StripPrefix=0
+        - id: dotori-purpose-service
+          uri: lb://dotori-purpose-service
+          predicates:
+            - Path=/api/v1/purpose/**
+          filters:
+            - StripPrefix=0
         - id: dotori-user-service
           uri: lb://dotori-user-service
           predicates:
-            - Path=/dotori-user-service/**
-            - Method=POST
+            - Path=/api/v1/user/**, /api/v1/oneCent/**
           filters:
-            - RewritePath=/dotori-user-service/(?<segment>.*), /$\{segment}
+            - StripPrefix=0
+        - id: dotori-main-service
+          uri: lb://dotori-main-service
+          predicates:
+            - Path=/api/v1/account/**, /api/v1/plan/**
+          filters:
+            - StripPrefix=0
+            #- RewritePath=/dotori-user-service/(?<segment>.*), /$\{segment}
 #    config:
 #      name: dotori
 #      profile: gateway
