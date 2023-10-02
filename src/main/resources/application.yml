@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://j9d107.p.ssafy.io:8761/eureka
 
 spring:
   application:
@@ -33,18 +33,18 @@ spring:
         - id: dotori-main-service
           uri: lb://dotori-main-service
           predicates:
-            - Path=/api/v1/account/**, /api/v1/plan/**, /api/v1/bank/**, /api/v1/categoryGroup/**, /api/v1/categoryData/**, /api/v1/category/**, /api/v1/payment/**, /api/v1/chatgpt/**, /api/v1/planDetail/**, /api/v1/reward/**
+            - Path=/api/v1/account/**, /api/v1/plan/**, /api/v1/purpose/**, /api/v1/bank/**, /api/v1/chatgpt/**
           filters:
             - StripPrefix=0
             #- RewritePath=/dotori-user-service/(?<segment>.*), /$\{segment}
-#    config:
-#      name: dotori
-#      profile: gateway
-#  config:
-#    import: "optional:configserver:http://j9d107.p.ssafy.io:9900/"
+    config:
+      name: dotori
+      profile: gateway
+  config:
+    import: "optional:configserver:http://j9d107.p.ssafy.io:9900/"
 
   main:
     allow-bean-definition-overriding: true
 
-#encrypt:
-#  key: ${ENCRYPT_KEY}
+encrypt:
+  key: ${ENCRYPT_KEY}
