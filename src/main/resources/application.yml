@@ -33,7 +33,7 @@ spring:
         - id: dotori-main-service
           uri: lb://dotori-main-service
           predicates:
-            - Path=/api/v1/account/**, /api/v1/plan/**, /api/v1/purpose/**, /api/v1/bank/**, /api/v1/chatgpt/**
+            - Path=/api/v1/account/**, /api/v1/plan/**, /api/v1/bank/**, /api/v1/categoryGroup/**, /api/v1/categoryData/**, /api/v1/category/**, /api/v1/payment/**, /api/v1/chatgpt/**, /api/v1/planDetail/**, /api/v1/reward/**
           filters:
             - StripPrefix=0
             #- RewritePath=/dotori-user-service/(?<segment>.*), /$\{segment}
