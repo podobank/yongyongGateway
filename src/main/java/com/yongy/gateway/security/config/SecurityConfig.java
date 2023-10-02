@@ -1,6 +1,7 @@
 package com.yongy.gateway.security.config;
 
-import com.yongy.gateway.security.filter.JwtAuthenticationFilter;
+import com.yongy.gateway.security.enums.Role;
+import com.yongy.gateway.security.filter.AuthorizationHeaderFilter;
 import com.yongy.gateway.security.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +13,15 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.server.WebFilter;
 
 @Slf4j
 @Configuration
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
@@ -32,10 +36,11 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .authorizeExchange()
-                .pathMatchers("/dotori-user-service/**").permitAll()
+                .pathMatchers("/dotori-auth-service/**").permitAll()
+                .pathMatchers("/dotori-user-service/**").hasAnyRole("USER", "ADMIN")
                 .anyExchange().permitAll()
                 .and()
-                .addFilterAt(new JwtAuthenticationFilter(jwtTokenProvider), SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterAt(new AuthorizationHeaderFilter(jwtTokenProvider), SecurityWebFiltersOrder.AUTHENTICATION)
                 .logout().disable();
         return http.build();
     }
