@@ -37,11 +37,11 @@ spring:
           filters:
             - StripPrefix=0
             #- RewritePath=/dotori-user-service/(?<segment>.*), /$\{segment}
-      config:
-        name: dotori
-        profile: gateway
     config:
-      import: "optional:configserver:http://j9d107.p.ssafy.io:9900/"
+      name: dotori
+      profile: gateway
+  config:
+    import: "optional:configserver:http://j9d107.p.ssafy.io:9900/"
 
   main:
     allow-bean-definition-overriding: true
