@@ -11,18 +11,37 @@ spring:
     name: apigateway-service
   cloud:
     gateway:
-      routes:
-        - id: dotori-user-service
-          uri: lb://dotori-user-service    # 인증 서버 URI
-          predicates:                   # 요청 헤더나 Path 조건 비교
-            - Path=/dotori-user-service/**    # 요청 Path
+      routes: # 사용자 인증과정             - StripPrefix=1             - Method=POST
+        - id: dotori-auth-service
+          uri: lb://dotori-auth-service
+          predicates:
+            - Path=/api/v1/auth/**
           filters:
-            - StripPrefix=1
+            - StripPrefix=0
+        - id: dotori-purpose-service
+          uri: lb://dotori-purpose-service
+          predicates:
+            - Path=/api/v1/purpose/**
+          filters:
+            - StripPrefix=0
+        - id: dotori-user-service
+          uri: lb://dotori-user-service
+          predicates:
+            - Path=/api/v1/user/**, /api/v1/oneCent/**
+          filters:
+            - StripPrefix=0
+        - id: dotori-main-service
+          uri: lb://dotori-main-service
+          predicates:
+            - Path=/api/v1/account/**, /api/v1/plan/**, /api/v1/purpose/**, /api/v1/bank/**, /api/v1/chatgpt/**
+          filters:
+            - StripPrefix=0
+            #- RewritePath=/dotori-user-service/(?<segment>.*), /$\{segment}
+      config:
+        name: dotori
+        profile: gateway
     config:
-      name: dotori
-      profile: gateway
-  config:
-    import: "optional:configserver:http://j9d107.p.ssafy.io:9900/"
+      import: "optional:configserver:http://j9d107.p.ssafy.io:9900/"
 
   main:
     allow-bean-definition-overriding: true
